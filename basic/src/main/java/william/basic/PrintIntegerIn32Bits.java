@@ -1,11 +1,11 @@
-package william.basic.bits;
+package william.basic;
 
 /**
  * @author ZhangShenao
  * @date 2023/8/10 9:58 AM
  * @description: 将整数按照32位二进制格式打印
  */
-public class 将整数按照32位二进制格式打印 {
+public class PrintIntegerIn32Bits {
     
     public static void main(String[] args) {
         printIntIn32Bits(5);
