@@ -31,3 +31,35 @@ private static void printIntIn32Bits(int num) {
 ## 算法概述
 
 ### 什么是算法
+
+- 有具体的问题
+- 针对这个问题，设计具体的解决流程
+- 有评价处理流程的可量化指标
+
+### 算法的分类
+
+- 明确知道怎么算的流程
+- 明确知道怎么尝试的流程（递归、分治...）
+
+### 算法：给定一个参数 N，返回 1!+2!+3!+4!+…+N! 的结果
+
+代码实现：
+
+```Java
+public static int factorialSum(int num) {
+    if (num <= 0) {
+        return 0;
+    }
+    if (num == 1) {
+        return 1;
+    }
+    int sum = 1;
+    int cur = 1;
+    for (int i = 2; i <= num; i++) {
+        cur = cur * i;  //记录前一次阶乘的结果
+        sum += cur;
+    }
+    
+    return sum;
+}
+```
