@@ -63,3 +63,82 @@ public static int factorialSum(int num) {
     return sum;
 }
 ```
+
+### 算法：选择排序
+
+**算法思想：每趟在 [start,N-1] 范围内找到最小元素，并与start位置的元素进行交换。**
+
+代码实现：
+
+```Java
+private static void selectionSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length < 2) {
+        return;
+    }
+    
+    int N = arr.length;
+    //每趟在[start,N-1]范围内找到最小元素,并与start位置的元素进行交换
+    for (int start = 0; start < N - 1; start++) {
+        int minIdx = start;
+        for (int next = start + 1; next < N; next++) {
+            if (arr[next] < arr[minIdx]) {
+                minIdx = next;
+            }
+        }
+        
+        ArrayUtils.swap(arr, start, minIdx);
+    }
+}
+```
+
+### 算法：冒泡排序
+
+**算法思想：每趟在 [0,end] 范围内，对相邻元素两两比较，将较大的元素交换到后面，最后使得 end 位置的元素为[0,end] 范围内的最大值。**
+
+代码实现：
+
+```Java
+private static void bubbleSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length < 2) {
+        return;
+    }
+    
+    //每趟在[0,end]范围内,对相邻元素两两比较,将较大的交换到后面,最后使得end位置的元素为[0,end]范围内的最大值
+    int N = arr.length;
+    for (int end = N - 1; end >= 1; end--) {
+        for (int i = 0; i < end; i++) {
+            if (arr[i] > arr[i + 1]) {
+                ArrayUtils.swap(arr, i, i + 1);
+            }
+        }
+    }
+}
+```
+
+### 算法：插入排序
+
+**算法思想：假定 [0,end] 范围内的元素已经有序，对于新加入的元素 end+1，通过向前依次比较交换，最终插入到合适的位置，实现 [0,end+1] 范围内的元素有序。**
+
+算法实现：
+
+```Java
+private static void insertionSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length < 2) {
+        return;
+    }
+    
+    //假定[0,end]范围内的元素已经有序,对于新加入的元素cur=arr[end+1],通过向前依次比较交换,最终插入到合适的位置,实现[0,end+1]范围内的元素有序
+    int N = arr.length;
+    for (int end = 1; end < N - 1; end++) {
+        int curIdx = end + 1;   //记录当前元素索引
+        //用当前元素依次向前比较,如果前面还有元素,且当前元素比前一个元素小,则进行交换
+        while (curIdx >= 1 && arr[curIdx] < arr[curIdx - 1]) {
+            ArrayUtils.swap(arr, curIdx, curIdx - 1);
+            --curIdx;
+        }
+    }
+}
+```
