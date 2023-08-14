@@ -142,3 +142,60 @@ private static void insertionSort(int[] arr) {
     }
 }
 ```
+
+# 2. 对数器与随机行为
+
+## 什么是数据结构
+
+- 数据结构是存储和组织数据的方式
+- 精心设计的数据结构，可以带来更高的存储和运行效率
+- 数据结构是很多算法得以运行的载体
+
+## 最基本的数据结构
+
+### 数组
+
+**便于寻址，不便于增删数据**
+
+### 链表
+
+**便于增删数据，不便于寻址**
+
+## 算法：计算数组 [L,R] 范围内的元素和
+
+**算法思想：构造前缀和数组 preSum，使得 preSum[i] = 数组 [0,i] 范围内的元素和。**
+
+**那么，[L,R] 范围内的元素和 = preSum[R] - preSum[L - 1]**
+
+算法实现：
+
+```Java
+/**
+ * 计算数字arr[L,R]范围内的元素和
+ */
+private static int rangeSum(int[] arr, int L, int R) {
+    //边界条件校验
+    if (L < 0 || R >= arr.length || L > R) {
+        throw new IllegalArgumentException();
+    }
+    
+    int[] preSum = buildPreSumArray(arr);
+    if (L == 0) {
+        return preSum[R];
+    }
+    
+    return (preSum[R] - preSum[L - 1]);
+}
+
+/**
+ * 构造前缀和数组
+ */
+private static int[] buildPreSumArray(int[] arr) {
+    int[] preSum = new int[arr.length];
+    preSum[0] = arr[0];
+    for (int i = 1; i < arr.length; i++) {
+        preSum[i] = preSum[i - 1] + arr[i];
+    }
+    return preSum;
+}
+```
