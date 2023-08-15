@@ -227,3 +227,104 @@ private static double exponentRandom() {
     return Math.max(Math.random(), Math.random());
 }
 ```
+
+## 算法：已知一个随机函数 f()，可以等概率生成 [a,b] 之间的随机整数。现在要求仅利用该函数，等概率生成 [c,d] 之间的随机整数。
+
+**算法思路：**
+
+1. 利用函数 f() 构造函数 f1()，创建等概率的 0/1 发生器。
+2. 将区间 [c,d] 转换为区间 [0,d-c]，判断最大值 (d-c) 需要几位二进制表示。
+3. 利用函数 f1()，构造函数 f2()，可以等概率生成[0,d-c] 区间内随机整数。
+4. 最终的函数 g() = f2() + c。
+
+算法实现：[1,5] -> [1,7]
+
+```Java
+public static void main(String[] args) {
+    int[] counts = new int[8];
+    int times = 10000000;
+    for (int i = 0; i < times; i++) {
+        int rand = g();
+        counts[rand]++;
+    }
+    for (int i = 0; i < counts.length; i++) {
+        double p = ((double) counts[i]) / times;
+        System.out.printf("生成%d的概率为%f\n", i, p);
+    }
+}
+
+/**
+ * 已知一个随机函数f(),可以等概率生成[1,5]之间的随机整数
+ */
+private static int f() {
+    return (int) (Math.random() * 5) + 1;
+}
+
+/**
+ * 利用函数f()构造函数f1(),创建等概率的0/1发生器
+ */
+private static int f1() {
+    int res = 0;
+    do {
+        res = f();
+    } while (res == 3);
+    return (res < 3) ? 0 : 1;
+}
+
+/**
+ * 利用函数f1(),构造函数f2(),可以等概率生成[0,6]区间内随机整数 最大值6需要3位二进制表示,因此需要生成三次随机数
+ */
+private static int f2() {
+    int res = 0;
+    do {
+        res = (f1() << 2) + (f1() << 1) + f1();
+    } while (res == 7);
+    return res;
+}
+
+/**
+ * 最终函数g()=f2()+1,可以等概率生成[1,7]区间内随机整数
+ */
+private static int g() {
+    return f2() + 1;
+}
+```
+
+## 算法：已知一个随机函数 f()，可以不等概率生成 0/1。现在要求仅利用该函数，等概率生成 0/1。
+
+**算法思路**：利用函数 f() 生成两次随机数，如果为 {0,0} 或 {1,1} 则再次生成；如果为 {0,1} ，则返回1；否则返回0。
+
+算法实现：
+
+```Java
+public static void main(String[] args) {
+    int[] counts = new int[2];
+    int times = 10000000;
+    for (int i = 0; i < times; i++) {
+        int rand = g();
+        counts[rand]++;
+    }
+    for (int i = 0; i < counts.length; i++) {
+        double p = ((double) counts[i]) / times;
+        System.out.printf("生成%d的概率为%f\n", i, p);
+    }
+}
+
+/**
+ * 已知随机函数f(),可以不等概率生成0/1 生成0的概率为0.75,生成1的概率为0.25
+ */
+private static int f() {
+    return (Math.random() >= 0.75 ? 1 : 0);
+}
+
+/**
+ * 利用函数f()构造等概率0/1发生器。 对f()生成两次随机数,如果为{0,0}或{1,1}则再次生成;如果为{0,1},则返回1;否则返回0。
+ */
+private static int g() {
+    int res = -1;
+    do {
+        res = f();
+    } while (f() == res);
+    return res;
+}
+```
