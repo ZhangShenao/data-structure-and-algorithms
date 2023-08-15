@@ -1,4 +1,4 @@
-package william.basic;
+package william.basic.random;
 
 /**
  * @author ZhangShenao

@@ -1,4 +1,4 @@
-package william.basic;
+package william.basic.ext;
 
 /**
  * @author ZhangShenao
