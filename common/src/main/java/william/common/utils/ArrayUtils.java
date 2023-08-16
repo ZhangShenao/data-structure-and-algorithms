@@ -32,12 +32,25 @@ public class ArrayUtils {
     }
     
     /**
+     * 生成长度为len的有序数组,元素大小在[min,max]范围内
+     */
+    public static int[] generateRandomSortedArray(int len, int min, int max) {
+        int[] arr = new int[len];
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        for (int i = 0; i < len; i++) {
+            arr[i] = random.nextInt(min, max + 1);
+        }
+        Arrays.sort(arr);
+        return arr;
+    }
+    
+    /**
      * 打印标准排序结果
      */
-    public static void printStandardSortResult(int[] arr){
+    public static void printStandardSortResult(int[] arr) {
         System.out.println("原始数组:");
         System.out.println(Arrays.toString(arr));
-    
+        
         int[] copy = Arrays.copyOf(arr, arr.length);
         Arrays.sort(copy);
         System.out.println("正确排序数组:");

@@ -1,5 +1,5 @@
 # data-structure-and-algorithms
-# 1. 位运算与排序基础
+# 1. 位运算
 
 ## 二进制与位运算
 
@@ -28,6 +28,8 @@ private static void printIntIn32Bits(int num) {
 
 **+-\*/ 四则运算，底层都是基于二进制的位运算（如与、或、非、同或、异或、移位等）实现的。采用补码表示法，可以将整数和负数的运算逻辑统一，无需单独实现两套逻辑，提升了整体的运算效率。**
 
+# 2. 排序基础
+
 ## 算法概述
 
 ### 什么是算法
@@ -41,7 +43,7 @@ private static void printIntIn32Bits(int num) {
 - 明确知道怎么算的流程
 - 明确知道怎么尝试的流程（递归、分治...）
 
-### 算法：给定一个参数 N，返回 1!+2!+3!+4!+…+N! 的结果
+## 算法：给定一个参数 N，返回 1!+2!+3!+4!+…+N! 的结果
 
 代码实现：
 
@@ -64,7 +66,7 @@ public static int factorialSum(int num) {
 }
 ```
 
-### 算法：选择排序
+## 算法：选择排序
 
 **算法思想：每趟在 [start,N-1] 范围内找到最小元素，并与start位置的元素进行交换。**
 
@@ -92,7 +94,7 @@ private static void selectionSort(int[] arr) {
 }
 ```
 
-### 算法：冒泡排序
+## 算法：冒泡排序
 
 **算法思想：每趟在 [0,end] 范围内，对相邻元素两两比较，将较大的元素交换到后面，最后使得 end 位置的元素为[0,end] 范围内的最大值。**
 
@@ -117,9 +119,9 @@ private static void bubbleSort(int[] arr) {
 }
 ```
 
-### 算法：插入排序
+## 算法：插入排序
 
-**算法思想：假定 [0,end] 范围内的元素已经有序，对于新加入的元素 end+1，通过向前依次比较交换，最终插入到合适的位置，实现 [0,end+1] 范围内的元素有序。**
+**算法思想：假定 [0,end] 范围内的元素已经有序，对于新加入的元素 end+1，通过向前依次比较交换，最终插入到合适的位置，最终实现 [0,end+1] 范围内的元素有序。**
 
 算法实现：
 
@@ -143,7 +145,7 @@ private static void insertionSort(int[] arr) {
 }
 ```
 
-# 2. 对数器与随机行为
+# 3. 随机数
 
 ## 什么是数据结构
 
@@ -326,5 +328,108 @@ private static int g() {
         res = f();
     } while (f() == res);
     return res;
+}
+```
+
+# 4. 二分思想
+
+## 算法：在有序数组中查找指定元素所在的索引
+
+**算法思想：经典二分查找法。**
+
+算法实现：
+
+```Java
+/**
+ * 二分查找:在数组arr中查找指定元素target所在的索引。如果未找到则返回-1
+ */
+private static int binarySearch(int[] arr, int target) {
+    //边界条件校验
+    if (arr == null || arr.length == 0) {
+        return -1;
+    }
+    
+    int start = 0;
+    int end = arr.length - 1;
+    
+    while (start <= end) {
+        int mid = start + ((end - start) >> 1); //避免直接相加导致结果溢出
+        if (arr[mid] == target) {
+            return mid;
+        }
+        if (arr[mid] > target) {
+            end = mid - 1;
+        } else {
+            start = mid + 1;
+        }
+    }
+    return -1;
+    
+}
+```
+
+## 算法：在有序数组中找到第一个 >= target 的索引
+
+**算法思想：借助二分查找法，记录当前 >= target 的索引，并不断向左侧区间查找，尝试更新索引。**
+
+算法实现：
+
+```Java
+/**
+ * 有序数组中arr中,找到第一个>=target的索引。如果未找到则返回-1
+ */
+private static int findFirstLE(int[] arr, int target) {
+    //边界条件校验
+    if (arr == null || arr.length == 0) {
+        return -1;
+    }
+    
+    int start = 0;
+    int end = arr.length - 1;
+    int index = -1; //记录当前>=target的索引
+    while (start <= end) {
+        int mid = start + ((end - start) >> 1);
+        if (arr[mid] >= target) {    //找到了>=target的区间,更新索引值,并继续向左侧区间查找
+            index = mid;
+            end = mid - 1;
+        } else {    //该区间均<target,向右侧区间查找
+            start = mid + 1;
+        }
+    }
+    
+    return index;
+}
+```
+
+## 算法：在有序数组中找到最后一个 <= target 的索引
+
+**算法思想：借助二分查找法，记录当前 <= target 的索引，并不断向右侧区间查找，尝试更新索引。**
+
+算法实现：
+
+```Java
+/**
+ * 在有序数组arr中找到最后一个<=target的索引。如果未找到则返回-1
+ */
+private static int findLastLessOrEquals(int[] arr, int target) {
+    //边界条件校验
+    if (arr == null || arr.length == 0) {
+        return -1;
+    }
+    
+    int start = 0;
+    int end = arr.length - 1;
+    int index = -1; //记录当前<=target的索引
+    while (start <= end) {
+        int mid = start + ((end - start) >> 1);
+        if (arr[mid] <= target) {    //找到了<=target的区间,更新索引值,并继续向右侧区间查找
+            index = mid;
+            start = mid + 1;
+        } else {  //当前区间均>target,继续向左侧区间查找
+            end = mid - 1;
+        }
+    }
+    
+    return index;
 }
 ```
