@@ -43,6 +43,19 @@ private static void printIntIn32Bits(int num) {
 - 明确知道怎么算的流程
 - 明确知道怎么尝试的流程（递归、分治...）
 
+### 算法的时间复杂度
+
+**大 O 复杂度分析法：描述随着数据规模的增长，算法执行耗时的增长趋势。**
+
+典型的时间复杂度：
+
+- O(1)：常数时间复杂度
+- O(logN)：二分查找、二叉树相关操作。每次计算可以缩小一半的范围。
+- O(N)：遍历
+- O(N*logN)：快速排序、归并排序、堆排序
+- O(N^N)：基本排序算法。
+- O(N!)：穷举
+
 ## 算法：给定一个参数 N，返回 1!+2!+3!+4!+…+N! 的结果
 
 代码实现：
@@ -433,3 +446,72 @@ private static int findLastLessOrEquals(int[] arr, int target) {
     return index;
 }
 ```
+
+## 算法：找到数组中的局部最小值
+
+算法描述：给定一个长度为 N 的无序数组，已知数组中的相邻元素均不相等，要求找到数组中任意一个局部最小值所在的索引。
+
+对于局部最小值的定义为：
+
+- 如果 arr[0] < arr[1]，则 arr[0] 为局部最小值。
+- 如果 arr[N-1] < arr[N-2]，则 arr[N-1] 为局部最小值。
+- 对于任意 arr[i]，0 < i < N-1，如果 arr[i] < arr[i-1] 且 arr[i] < arr[i+1]，则 arr[i] 为局部最小值。
+
+**算法思想**
+
+- **因为数组无序，且相邻元素均不相等，则数组一定存在至少一个局部最小值。**
+- **首先考虑边界情况：**
+  - **如果 arr[0] < arr[1]，则 arr[0] 为局部最小值。**
+  - **如果 arr[N-1] < arr[N-2]，则 arr[N-1] 为局部最小值。**
+- **边界情况不成立，说明 arr[1] < arr[0]，且 arr[N-2] < arr[N-1]，数组元素的趋势为先下降后上升，则局部最小值一定存在于 [0,N-1] 范围内。**
+- **采用二分查找思想，对于任意范围 arr[start,end]，取中间位置 mid：**
+  - **如果 arr[mid] < arr[mid-1]，且 arr[mid] < arr[mid+1]，则 arr[mid] 就是局部最小值。**
+  - **如果 arr[mid] > arr[mid - 1]，则数组在 [start,mid] 范围内先下降后上升，该范围内一定存在局部最小值，在 [start,mid-1] 范围内继续查找。**
+  - **否则 arr[mid] > arr[mid + 1]，则数组在 [mid,end] 范围内先下降后上升，该范围内一定存在局部最小值，在 [mid+1,end] 范围内继续查找。**
+
+算法实现：
+
+```Java
+/**
+ * 找到数组arr中局部最小值所在的索引。如果未找到则返回-1
+ */
+private static int findLocalMinIndex(int[] arr) {
+    //处理边界条件
+    if (arr == null || arr.length < 1) {
+        return -1;
+    }
+    int N = arr.length;
+    //如果数组只有一个元素,则arr[0]就是局部最小值
+    if (N == 1) {
+        return 0;
+    }
+    //处理首、尾处的局部最小值
+    if (arr[0] < arr[1]) {
+        return 0;
+    }
+    if (arr[N - 1] < arr[N - 2]) {
+        return N - 1;
+    }
+    
+    //数组呈先下降、后上升的趋势，局部最小值一定在[0,N-1]范围内。
+    //采用二分查找思想,在[start,mid,end]范围内判断局部最小值
+    int start = 0;
+    int end = N - 1;
+    while (start < end - 1) {    //要求[start,mid,end]区间内至少存在三个元素
+        int mid = start + ((end - start) >> 1);
+        if (arr[mid] < arr[mid - 1] && arr[mid] < arr[mid + 1]) {    //找到局部最小值,直接返回
+            return mid;
+        }
+        if (arr[mid] > arr[mid] - 1) {   //数组在[start,mid]范围内先下降后上升,该范围内一定存在局部最小值,在[start,mid-1]范围内继续查找
+            end = mid - 1;
+        } else {   //否则arr[mid]>arr[mid + 1],则数组在[mid,end]范围内先下降后上升,该范围内一定存在局部最小值,在[mid+1,end]范围内继续查找。
+            start = mid + 1;
+        }
+    }
+    
+    //上述过程为找到局部最小值,说明start>=end-1,则[start,end]区间内最多只有2个元素,单独判断这两个元素即可
+    return arr[start] <= arr[end] ? start : end;
+}
+```
+
+**二分思想也可以作用于非有序的场景，只要每次查找可以缩小一半的范围，都可以使用二分。**
