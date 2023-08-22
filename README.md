@@ -515,3 +515,195 @@ private static int findLocalMinIndex(int[] arr) {
 ```
 
 **二分思想也可以作用于非有序的场景，只要每次查找可以缩小一半的范围，都可以使用二分。**
+
+
+
+# 5. 链表
+
+## 算法：单链表反转
+
+**算法思想：从头开始遍历链表，针对每个节点，修改其 next 指针的指向。注意：每次遍历到一个节点时，需要先记录 next 节点，否则当修改指针后， next 节点就丢失了。**
+
+算法实现：
+
+```Java
+/**
+ * 反转单链表,返回反转后的链表头结点
+ */
+private static SingleListNode<Integer> reverseSingleList(SingleListNode<Integer> head) {
+    //边界条件校验
+    if (head == null || head.next == null) {
+        return head;
+    }
+    
+    SingleListNode<Integer> prev = null;
+    SingleListNode<Integer> next = null;
+    SingleListNode<Integer> cur = head;
+    
+    while (cur != null) {
+        next = cur.next;    //首先记录next节点
+        cur.next = prev;
+        prev = cur;
+        cur = next;
+    }
+    
+    return prev;
+}
+```
+
+## 算法：使用单链表实现队列
+
+**算法思想：分别使用头指针 head、尾指针 tail ，记录头、尾节点位置。当元素入队时，从尾节点出入队，并修改 tail 指针指向；当元素出队时，从头结点出队，并修改 head 指针指向。**
+
+算法实现：
+
+```Java
+/**
+ * @author ZhangShenao
+ * @date 2023/8/22 9:33 AM
+ * @description: 使用单链表实现队列
+ */
+public class SingleListQueue<T> {
+    
+    /**
+     * 头指针,指向队头
+     */
+    private SingleListNode<T> head;
+    
+    /**
+     * 尾指针,指向队尾
+     */
+    private SingleListNode<T> tail;
+    
+    /**
+     * 记录当前队列中元素数量
+     */
+    private int size;
+    
+    /**
+     * 判断队列是否为空
+     */
+    public boolean isEmpty() {
+        return (size == 0);
+    }
+    
+    /**
+     * 获取当前队列中元素数量
+     */
+    public int size() {
+        return size;
+    }
+    
+    /**
+     * 元素入队
+     */
+    public void offer(T ele) {
+        SingleListNode<T> cur = new SingleListNode<>(ele, null);
+        if (tail == null) { //如果当前队列为空,则初始化队列
+            head = tail = cur;
+        } else { //队列不为空,在尾部入队
+            tail.next = cur;
+            tail = cur;
+        }
+        ++size;
+    }
+    
+    /**
+     * 元素出队
+     */
+    public T poll() {
+        //处理空队列
+        if (head == null) {
+            return null;
+        }
+        
+        //队列不为空,从队头出队
+        SingleListNode<T> oldHead = head;
+        head = head.next;
+        oldHead.next = null;
+        if (head == null) {  //队列已为空,则修改tail指针
+            tail = null;
+        }
+        
+        --size;
+        return oldHead.value;
+    }
+    
+    /**
+     * 查看队头元素,并不出队
+     */
+    public T peek() {
+        if (head == null) {
+            return null;
+        }
+        return head.value;
+    }
+}
+```
+
+## 算法：使用单链表实现栈
+
+**算法思想：使用 head 指针指向队头，每次压栈、弹栈操作，都在队头进行，并修改 head 指针。**
+
+算法实现：
+
+```Java
+public class SingleListStack<T> {
+    
+    /**
+     * 头指针,指向栈顶
+     */
+    private SingleListNode<T> head;
+    
+    /**
+     * 记录当前栈中元素数量
+     */
+    private int size;
+    
+    /**
+     * 判断栈是否为空
+     */
+    public boolean isEmpty() {
+        return (size == 0);
+    }
+    
+    /**
+     * 获取当前栈中元素数量
+     */
+    public int size() {
+        return size;
+    }
+    
+    /**
+     * 将元素压栈
+     */
+    public void push(T ele) {
+        head = new SingleListNode<>(ele, head);
+        ++size;
+    }
+    
+    /**
+     * 弹出栈顶元素
+     */
+    public T pop() {
+        if (head == null) {
+            return null;
+        }
+        SingleListNode<T> oldHead = head;
+        head = oldHead.next;
+        oldHead.next = null;
+        --size;
+        return oldHead.value;
+    }
+    
+    /**
+     * 获取栈顶元素,并不弹栈
+     */
+    public T top() {
+        if (head == null) {
+            return null;
+        }
+        return head.value;
+    }
+}
+```

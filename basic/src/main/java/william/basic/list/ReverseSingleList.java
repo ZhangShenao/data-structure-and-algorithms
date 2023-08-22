@@ -32,7 +32,7 @@ public class ReverseSingleList {
         SingleListNode<Integer> cur = head;
         
         while (cur != null) {
-            next = cur.next;
+            next = cur.next;    //首先记录next节点
             cur.next = prev;
             prev = cur;
             cur = next;
