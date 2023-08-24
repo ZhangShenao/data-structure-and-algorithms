@@ -1,4 +1,4 @@
-package william.leetcode;
+package william.leetcode.list;
 
 /**
  * @author ZhangShenao
