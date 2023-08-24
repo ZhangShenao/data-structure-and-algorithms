@@ -792,3 +792,107 @@ private void reverse(ListNode start, ListNode end) {
     start.next = end;
 }
 ```
+
+## 算法：两数相加
+
+LeetCode 地址：https://leetcode.cn/problems/add-two-numbers/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+
+**算法思想：按从低位到高位的顺序，同时遍历两个链表，计算相加的结果，并保存进位。最终遍历到两个链表都为空时，需要根据是否有进位，判断是否需要新增进位节点。**
+
+算法实现：
+
+```Java
+public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+    //边界条件校验
+    if (l1 == null) {
+        return l2;
+    }
+    if (l2 == null) {
+        return l1;
+    }
+    
+    int carry = 0;  //暂存当前进位
+    ListNode dummy = new ListNode();    //新链表的哑头结点
+    ListNode cur = dummy;
+    
+    //按从低位到高位的顺序,同时遍历两个链表,计算相加的结果,并保存进位
+    while (l1 != null && l2 != null) {
+        int sum = l1.val + l2.val + carry;
+        int curVal = sum % 10;
+        carry = sum / 10;
+        cur.next = new ListNode(curVal);
+        l1 = l1.next;
+        l2 = l2.next;
+        cur = cur.next;
+    }
+    
+    //处理其中一个链表已经遍历结束的情况
+    while (l1 != null) {
+        int sum = l1.val + carry;
+        int curVal = sum % 10;
+        carry = sum / 10;
+        cur.next = new ListNode(curVal);
+        l1 = l1.next;
+        cur = cur.next;
+    }
+    while (l2 != null) {
+        int sum = l2.val + carry;
+        int curVal = sum % 10;
+        carry = sum / 10;
+        cur.next = new ListNode(curVal);
+        l2 = l2.next;
+        cur = cur.next;
+    }
+    
+    //两个链表都遍历结束,考虑进位
+    if (carry != 0) {
+        cur.next = new ListNode(carry);
+    }
+    
+    return dummy.next;
+}
+```
+
+## 算法：合并两个有序链表
+
+LeetCode 地址：https://leetcode.cn/problems/merge-two-sorted-lists/
+
+**算法思想：从头开始，同时遍历两个链表，选择数值较小的节点，添加到新链表末尾，并将该节点向后移动。如果其中一条链表遍历完成，则直接添加另一条链表。**
+
+算法实现：
+
+```Java
+public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+    //边界条件校验
+    if (list1 == null) {
+        return list2;
+    }
+    if (list2 == null) {
+        return list1;
+    }
+    
+    ListNode dummy = new ListNode();    //新链表的哑头结点
+    ListNode cur = dummy;
+    
+    //从头开始,同时遍历两个链表,选择数值较小的节点,添加到新链表末尾,并将该节点向后移动
+    while (list1 != null && list2 != null) {
+        if (list1.val <= list2.val) {
+            cur.next = new ListNode(list1.val);
+            list1 = list1.next;
+        } else {
+            cur.next = new ListNode(list2.val);
+            list2 = list2.next;
+        }
+        
+        cur = cur.next;
+    }
+    
+    //处理其中一条链表已经遍历完的情况
+    if (list1 == null) {
+        cur.next = list2;
+    } else {
+        cur.next = list1;
+    }
+    return dummy.next;
+}
+```
