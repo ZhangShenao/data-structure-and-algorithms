@@ -4,9 +4,8 @@ package william.leetcode.list;
  * @author ZhangShenao
  * @date 2023/8/24 9:32 AM
  * @description: https://leetcode.cn/problems/merge-two-sorted-lists/
- * <p>合并两个有序链表</p>
  */
-public class Solution21 {
+public class Solution21_合并两个有序链表 {
     
     private static class ListNode {
         
