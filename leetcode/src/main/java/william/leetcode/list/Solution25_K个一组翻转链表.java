@@ -5,9 +5,8 @@ package william.leetcode.list;
  * @date 2023/8/23 9:54 AM
  * @description:
  * https://leetcode.cn/problems/reverse-nodes-in-k-group/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
- * <p>K个一组翻转链表</p>
  */
-public class Solution25 {
+public class Solution25_K个一组翻转链表 {
     
     private static class ListNode {
         

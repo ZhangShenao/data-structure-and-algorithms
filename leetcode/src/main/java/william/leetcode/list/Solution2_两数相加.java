@@ -5,9 +5,8 @@ package william.leetcode.list;
  * @date 2023/8/24 9:05 AM
  * @description:
  * https://leetcode.cn/problems/add-two-numbers/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
- * <p>两数相加</p>
  */
-public class Solution2 {
+public class Solution2_两数相加 {
     
     private static class ListNode {
         
