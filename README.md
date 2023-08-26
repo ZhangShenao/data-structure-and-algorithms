@@ -896,3 +896,52 @@ public ListNode mergeTwoLists(ListNode list1, ListNode list2) {
     return dummy.next;
 }
 ```
+
+## 算法：合并 K 个升序链表
+
+**算法思想：借助一个优先级队列（小顶堆）。首先将所有列表的头结点都放入优先级队列中，然后每次从优先级队列中取出一个最小的节点，连接到新链表的末尾。最后将取出的最小节点的后继节点再放入优先级队列中，继续上述过程，直到队列为空。**
+
+算法实现：
+
+```Java
+public ListNode mergeKLists(ListNode[] lists) {
+    //边界条件校验
+    if (lists == null || lists.length == 0) {
+        return null;
+    }
+    
+    //借助一个优先级队列(小顶堆)
+    PriorityQueue<ListNode> minHeap = new PriorityQueue<>(Comparator.comparingInt(o -> o.val));
+    
+    //首先将所有链表的头结点都放入堆中
+    for (int i = 0; i < lists.length; i++) {
+        ListNode n = lists[i];
+        if (n != null) {
+            minHeap.offer(n);
+        }
+    }
+    
+    if (minHeap.isEmpty()) {
+        return null;
+    }
+    
+    //先从堆中取出最小节点,作为新链表的头结点
+    ListNode head = minHeap.poll();
+    if (head.next != null) {
+        minHeap.offer(head.next);
+    }
+    
+    //依次从堆中取出最小节点,最为新链表的下一个节点,并将最小节点的后继节点放入堆中
+    ListNode cur = head;
+    while (!minHeap.isEmpty()) {
+        ListNode min = minHeap.poll();
+        cur.next = min;
+        if (min.next != null) {
+            minHeap.offer(min.next);
+        }
+        cur = cur.next;
+    }
+    
+    return head;
+}
+```
