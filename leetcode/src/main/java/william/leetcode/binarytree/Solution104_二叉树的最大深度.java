@@ -5,9 +5,9 @@ package william.leetcode.binarytree;
  * @date 2023/8/27 11:49 AM
  * @description: https://leetcode.cn/problems/maximum-depth-of-binary-tree/
  */
-public class Solution104 {
+public class Solution104_二叉树的最大深度 {
     
-    public class TreeNode {
+    private static class TreeNode {
         
         int val;
         
