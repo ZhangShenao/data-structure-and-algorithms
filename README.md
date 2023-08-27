@@ -945,3 +945,86 @@ public ListNode mergeKLists(ListNode[] lists) {
     return head;
 }
 ```
+
+# 6. 二叉树
+
+**二叉树相关的算法，经常采用递归思想来解决问题。**
+
+## 算法：相同的树
+
+LeetCode 地址：https://leetcode.cn/problems/same-tree/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+
+**算法思想：按照递归分别先序遍历两棵二叉树。如果当前的根节点相同，且左、右子树也分别相同，则说明两棵二叉树相同。**
+
+算法实现：
+
+```Java
+public boolean isSameTree(TreeNode p, TreeNode q) {
+    //边界条件校验
+    if ((p == null) ^ (q == null)) { //两棵树结构不同
+        return false;
+    }
+    
+    if (p == null && q == null) {
+        return true;
+    }
+    
+    //递归进行
+    //两棵树相等的条件:当前根节点的值相同,且左、右子树也相同
+    return (p.val == q.val) && isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+}
+```
+
+## 算法：对称二叉树
+
+LeetCode 地址：https://leetcode.cn/problems/symmetric-tree/
+
+**算法思想：采用递归思想，给定一个根节点 root，首先判断其 left、right 子节点是否相同，然后再判断 left.left = right.right，且 left.right = right.left。**
+
+算法实现：
+
+```Java
+public boolean isSymmetric(TreeNode root) {
+    //边界条件校验
+    if (root == null) {
+        return true;
+    }
+    
+    //采用递归算法,依次判断root的左、右子树是否对称
+    return isSymmetric(root.left, root.right);
+}
+
+private boolean isSymmetric(TreeNode left, TreeNode right) {
+    if ((left == null) ^ (right == null)) {  //两棵树结构不同
+        return false;
+    }
+    
+    if (left == null && right == null) {
+        return true;
+    }
+    
+    //两棵子树对称的条件:两个节点值相同,且left和right的子树对称
+    return (left.val == right.val) && (isSymmetric(left.left, right.right) && isSymmetric(left.right, right.left));
+}
+```
+
+## 算法：二叉树的最大深度
+
+LeetCode 地址：https://leetcode.cn/problems/maximum-depth-of-binary-tree/
+
+**算法思想：以 root 为根的二叉树的深度 = 左、右子树的最大深度的最大值 + 1。**
+
+算法实现：
+
+```Java
+public int maxDepth(TreeNode root) {
+    //边界条件校验
+    if (root == null) {
+        return 0;
+    }
+    
+    //采用递归算法
+    //以root为根的二叉树的深度=左、右子树二叉树深度的最大值+1
+    return Math.max(maxDepth(root.left), maxDepth(root.right)) + 1;
+}
+```
