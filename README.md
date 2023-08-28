@@ -1094,3 +1094,242 @@ private TreeNode build(int[] preorder, int preStart, int preEnd, int[] inorder, 
     return root;
 }
 ```
+
+## 算法：二叉树的层序遍历 II
+
+LeetCode 地址：https://leetcode.cn/problems/binary-tree-level-order-traversal-ii/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+
+**算法思想：借助一个队列，保存每层的节点。遍历每层节点时，首先获取当前层节点的数量，并且取出当前层所有节点。**
+
+算法实现：
+
+```Java
+public List<List<Integer>> levelOrderBottom(TreeNode root) {
+    //边界条件校验
+    if (root == null) {
+        return Collections.emptyList();
+    }
+    
+    //借助一个队列,按层保存节点
+    Queue<TreeNode> queue = new LinkedList<>();
+    
+    //使用链表保存最终结果
+    LinkedList<List<Integer>> result = new LinkedList<>();
+    
+    //首先将根节点入队
+    queue.offer(root);
+    
+    //遍历队列
+    while (!queue.isEmpty()) {
+        //首先记录当前层的节点数量
+        int size = queue.size();
+        List<Integer> curLevel = new LinkedList<>();
+        for (int i = 0; i < size; i++) {
+            //依次将当前层的节点出队,并按顺序将其左、右子节点依次入队
+            TreeNode node = queue.poll();
+            curLevel.add(node.val);
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+        
+        //保存当前层结果,插入结果链表头部
+        result.addFirst(curLevel);
+    }
+    
+    //返回结果
+    return result;
+}
+```
+
+## 算法：二叉树的层序遍历
+
+LeetCode 地址：https://leetcode.cn/problems/binary-tree-level-order-traversal/
+
+算法实现：
+
+```Java
+public List<List<Integer>> levelOrder(TreeNode root) {
+    //边界条件校验
+    if (root == null) {
+        return Collections.emptyList();
+    }
+    
+    //借助一个队列,依次保存每层的节点
+    Queue<TreeNode> queue = new LinkedList<>();
+    List<List<Integer>> result = new ArrayList<>();
+    
+    //首先将根节点入队
+    queue.offer(root);
+    
+    //遍历队列
+    while (!queue.isEmpty()) {
+        //首先记录当前层节点的数量,并取出指定数量的节点
+        int curLevelSize = queue.size();
+        List<Integer> curLevel = new ArrayList<>(curLevelSize);
+        
+        for (int i = 0; i < curLevelSize; i++) {
+            TreeNode node = queue.poll();
+            curLevel.add(node.val);
+            
+            //依次将节点的左、右子节点入队
+            if (node.left != null) {
+                queue.offer(node.left);
+            }
+            
+            if (node.right != null) {
+                queue.offer(node.right);
+            }
+        }
+        
+        result.add(curLevel);
+    }
+    
+    return result;
+}
+```
+
+## 算法：验证平衡二叉树
+
+LeetCode 地址：https://leetcode.cn/problems/balanced-binary-tree/
+
+**算法思想：利用递归思想。根据平衡二叉树的定义，需要满足左、右子树均为平衡二叉树，且左、右子树的高度差不超过1。递归遍历二叉树，记录以当前节点为根的二叉树的高度和是否为平衡二叉树。**
+
+算法实现：
+
+```Java
+/**
+ * 二叉树节点信息
+ */
+private static class TreeNodeInfo {
+    
+    private boolean balanced;   //以当前节点为根的二叉树是否为平衡二叉树
+    
+    private int height; //以当前节点为根的二叉树的高度
+    
+    public TreeNodeInfo(boolean balanced, int height) {
+        this.balanced = balanced;
+        this.height = height;
+    }
+}
+
+public boolean isBalanced(TreeNode root) {
+    //边界条件校验
+    if (root == null) {
+        return true;
+    }
+    
+    //递归
+    return traversal(root).balanced;
+}
+
+/**
+ * 递归遍历二叉树,并保存每个节点的信息
+ */
+private TreeNodeInfo traversal(TreeNode root) {
+    //递归终止条件——空树满足平衡树
+    if (root == null) {
+        return new TreeNodeInfo(true, 0);
+    }
+    
+    //依次遍历左、右子树
+    TreeNodeInfo left = traversal(root.left);
+    TreeNodeInfo right = traversal(root.right);
+    
+    //当前数的高度=左、右子树的最大高度+1
+    int height = Math.max(left.height, right.height) + 1;
+    
+    //当前树满足平衡二叉树的条件:左、右子树均为平衡二叉树 && 左、右子树高度相差不超过1
+    boolean balanced = left.balanced && right.balanced && Math.abs(left.height - right.height) <= 1;
+    
+    return new TreeNodeInfo(balanced, height);
+}
+```
+
+## 算法：验证二叉搜索树
+
+LeetCode 地址：https://leetcode.cn/problems/validate-binary-search-tree/
+
+**算法思想1：对二叉树进行中序遍历，判断得到的结果是否为有序数组。**
+
+**算法思想2：采用递归方式，遍历二叉树，并记录每个节点的信息，包括以当前节点为根的二叉树是否为二叉搜索树、当前二叉树的最小值、当前二叉树的最大值。**
+
+**根据二叉搜索树的定义，判断是否满足条件：**
+
+- **当前根节点的左、右子树均为二叉搜索树。**
+- **左子树的最大值 < 根节点的值。**
+- **右子树的最小值 > 根节点的值。**
+
+算法实现：
+
+```Java
+/**
+ * 记录节点信息
+ */
+private static class TreeNodeInfo {
+    
+    private boolean bst;    //以当前节点为根的二叉树是否为二叉搜索树
+    
+    private int max;     //以当前节点为根的二叉树的最大值
+    
+    private int min;     //以当前节点为根的二叉树的最小值
+    
+    public TreeNodeInfo(boolean bst, int max, int min) {
+        this.bst = bst;
+        this.max = max;
+        this.min = min;
+    }
+}
+
+public boolean isValidBST(TreeNode root) {
+    //边界条件校验
+    if (root == null) {
+        return true;
+    }
+    
+    //递归
+    return recursive(root).bst;
+}
+
+/**
+ * 递归遍历二叉树,并记录每个节点的信息
+ */
+private TreeNodeInfo recursive(TreeNode root) {
+    //递归终止条件
+    if (root == null) {
+        return null;
+    }
+    
+    //依次遍历左、右子树
+    TreeNodeInfo left = recursive(root.left);
+    TreeNodeInfo right = recursive(root.right);
+    
+    //更新当前树的最大、最小值
+    int max = root.val;
+    int min = root.val;
+    if (left != null) {
+        max = Math.max(max, left.max);
+        min = Math.min(min, left.min);
+    }
+    if (right != null) {
+        max = Math.max(max, right.max);
+        min = Math.min(min, right.min);
+    }
+    
+    //当前树满足二叉搜索树的条件:
+    //1.左、右子树均为二叉搜索树
+    //2.左子树的最大值 < 当前节点
+    //3.右子树的最小值 > 当前节点
+    boolean leftIsBst = (left == null || left.bst);
+    boolean rightIsBst = (right == null || right.bst);
+    boolean leftMaxLessThanRoot = (left == null || left.max < root.val);
+    boolean rightMinMoreThanRoot = (right == null || right.min > root.val);
+    boolean bst = (leftIsBst && rightIsBst && leftMaxLessThanRoot && rightMinMoreThanRoot);
+    
+    //返回当前节点信息
+    return new TreeNodeInfo(bst, max, min);
+}
+```
