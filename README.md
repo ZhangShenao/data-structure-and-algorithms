@@ -1392,3 +1392,67 @@ private void findPathSum(TreeNode root, int preSum, int targetSum) {
     }
 }
 ```
+
+## 算法：路径总和（二）
+
+LeetCode 地址：https://leetcode.cn/problems/path-sum-ii/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+
+算法思想：**使用一个全局变量 List 保存最终结果。采用递归思想，遍历二叉树，如果并记录路径上的前序和。当遍历到叶子节点时，判断当前叶子节点值+前序和是否等于目标值。如果相等，则将当前路径保存在结果中。**
+
+**需要特别注意：处理完当前节点后，需要清理现场，把当前节点从前序和数组中删除，这样才可以返回父节点继续处理其它路径。**
+
+算法实现：
+
+```Java
+/**
+ * 采用一个全局变量,保存最终的路径结果
+ */
+private List<List<Integer>> result = new ArrayList<>();
+
+public List<List<Integer>> pathSum(TreeNode root, int targetSum) {
+    //边界条件校验
+    if (root == null) {
+        return result;
+    }
+    
+    //递归
+    findPath(root, targetSum, new ArrayList<>(), 0);
+    
+    //返回最终结果
+    return result;
+}
+
+/**
+ * 递归方法,查找满足指定和的路径
+ */
+private void findPath(TreeNode root, int targetSum, List<Integer> prePath, int preSum) {
+    //遍历到了叶子节点,需要判断该条路径是否满足路径和条件
+    if (root.left == null && root.right == null) {
+        if (preSum + root.val == targetSum) {    //满足条件,在结果中保存当前路径
+            prePath.add(root.val);
+            List<Integer> copy = new ArrayList<>(prePath);  //拷贝一份,避免影响遍历结果
+            result.add(copy);
+            
+            //方法返回给父节点前,需要清理现场,把当前节点从前序路径中删除
+            prePath.remove(prePath.size() - 1);
+            return;
+        }
+    }
+    
+    //遍历到了非叶子节点,需要更新前序和与前序路径
+    preSum += root.val;
+    prePath.add(root.val);
+    
+    if (root.left != null) {
+        findPath(root.left, targetSum, prePath, preSum);
+    }
+    if (root.right != null) {
+        findPath(root.right, targetSum, prePath, preSum);
+    }
+    
+    //方法返回给父节点前,需要清理现场,把当前节点从前序路径中删除
+    prePath.remove(prePath.size() - 1);
+}
+```
+
+# 7. 高级排序算法
