@@ -1333,3 +1333,62 @@ private TreeNodeInfo recursive(TreeNode root) {
     return new TreeNodeInfo(bst, max, min);
 }
 ```
+
+## 算法：路径总和
+
+LeetCode 地址：https://leetcode.cn/problems/path-sum/?utm_source=LCUS&utm_medium=ip_redirect&utm_campaign=transfer2china
+
+**算法思想：使用一个全局变量记录是否找到路径的结果。采用递归思想，遍历二叉树，如果并记录路径上的前序和。当遍历到叶子节点时，判断当前叶子节点值+前序和是否等于目标值。如果相等，则修改全局结果。**
+
+算法实现：
+
+```Java
+/**
+ * 使用全局变量保存查找结果
+ */
+private boolean find = false;
+
+public boolean hasPathSum(TreeNode root, int targetSum) {
+    //边界条件校验
+    if (root == null) {
+        return false;
+    }
+    
+    find = false;
+    
+    //递归查找
+    findPathSum(root, 0, targetSum);
+    
+    //返回结果
+    return find;
+}
+
+/**
+ * 递归查找路径和,并更新全局结果
+ */
+private void findPathSum(TreeNode root, int preSum, int targetSum) {
+    //如果之前已经找到,则直接返回
+    if (find) {
+        return;
+    }
+    
+    //遍历到了叶子节点,判断是否满足路径和
+    if (root.left == null && root.right == null) {
+        if (root.val + preSum == targetSum) {    //满足路径和,更新全局结果
+            find = true;
+            return;
+        }
+    }
+    
+    //遍历到了非叶子节点,更新前序路径和
+    preSum += root.val;
+    
+    //递归遍历左、右子树
+    if (root.left != null) {
+        findPathSum(root.left, preSum, targetSum);
+    }
+    if (root.right != null) {
+        findPathSum(root.right, preSum, targetSum);
+    }
+}
+```
