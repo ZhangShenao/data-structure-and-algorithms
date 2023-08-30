@@ -1456,3 +1456,163 @@ private void findPath(TreeNode root, int targetSum, List<Integer> prePath, int p
 ```
 
 # 7. 高级排序算法
+
+## 归并排序——递归实现
+
+**算法思想：每次将一个数组平均划分成左、右两个部分，先分别保证左、右两部分有序，然后再将两个有序数组合并成为一个有序数组，最终实现整个数组有序。**
+
+算法实现：
+
+```Java
+/**
+ * 对数组arr进行归并排序
+ */
+private static void mergeSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length == 0) {
+        return;
+    }
+    
+    //递归进行
+    recursiveMergeSort(arr, 0, arr.length - 1);
+}
+
+/**
+ * 递归实现,对数组arr[L,R]范围进行递归排序
+ */
+private static void recursiveMergeSort(int[] arr, int L, int R) {
+    //递归终止条件
+    if (L >= R) {
+        return;
+    }
+    
+    //将数组平均划分为左、右两个部分
+    int M = L + ((R - L) >> 1); //避免溢出
+    
+    //先保证左、右两部分数组有序
+    recursiveMergeSort(arr, L, M);
+    recursiveMergeSort(arr, M + 1, R);
+    
+    //之后将两个有序数组合并为一个整体有序数组,保证arr[L,R]范围内有序
+    merge(arr, L, M, R);
+}
+
+/**
+ * 将arr[L,M]和arr[M+1,R]两个有序数组,合并为一个整体有序数组
+ */
+private static void merge(int[] arr, int L, int M, int R) {
+    int LEN = R - L + 1;
+    int[] sorted = new int[LEN];
+    int l = L;
+    int r = M + 1;
+    int i = 0;
+    
+    //同时遍历两个有序数组,将较小的元素放入新数组
+    while (l <= M && r <= R) {
+        if (arr[l] <= arr[r]) {
+            sorted[i++] = arr[l++];
+        } else {
+            sorted[i++] = arr[r++];
+        }
+    }
+    
+    //处理其中一个数组已经遍历完成的情况
+    while (l <= M) {
+        sorted[i++] = arr[l++];
+    }
+    while (r <= R) {
+        sorted[i++] = arr[r++];
+    }
+    
+    //将新生成的有序数组拷贝回原数组
+    for (int j = 0; j < LEN; j++) {
+        arr[L + j] = sorted[j];
+    }
+}
+```
+
+## 归并排序——迭代（非递归）
+
+**算法思想：借助一个步长 step 的概念。遍历数组，选择 step 长度的左、右两个数组，对数组进行 merge，合并成一个有序数组。每次 step = step \* 2，循环次过程，直到 step 大于数组长度。**
+
+算法实现：
+
+```Java
+/**
+ * 对数组arr进行归并排序
+ */
+private static void mergeSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length == 0) {
+        return;
+    }
+    int LEN = arr.length;
+    
+    //借助一个步长step,初始值为1,每次*2
+    int step = 1;
+    
+    while (step < LEN && step > 0) { //终止条件:step=数组长度,或step值过大溢出
+        //在每个步长周期,从左至右依次找到左、右两个数组,长度均为step
+        int L = 0;
+        while (L < LEN) {
+            if (LEN - L <= step) { //只有左边数组,无序merge,直接返回
+                break;
+            }
+            int M = L + step - 1;
+            
+            int R;
+            if (LEN - M - 1 >= step) {
+                R = M + step;
+            } else {
+                R = LEN - 1;
+            }
+            
+            //左边数组范围[L,M],右边数组范围[M+1,R]。将两个有序数组合并成一个有序数组
+            merge(arr, L, M, R);
+            
+            //继续处理下一个区间
+            if (R >= LEN - 1) {
+                break;
+            }
+            L = R + 1;
+            
+        }
+        
+        step = step << 1;
+    }
+    
+}
+
+/**
+ * 将arr[L,M]和arr[M+1,R]两个有序数组,合并为一个整体有序数组
+ */
+private static void merge(int[] arr, int L, int M, int R) {
+    int LEN = R - L + 1;
+    int[] sorted = new int[LEN];
+    int l = L;
+    int r = M + 1;
+    int i = 0;
+    
+    //同时遍历两个有序数组,将较小的元素放入新数组
+    while (l <= M && r <= R) {
+        if (arr[l] <= arr[r]) {
+            sorted[i++] = arr[l++];
+        } else {
+            sorted[i++] = arr[r++];
+        }
+    }
+    
+    //处理其中一个数组已经遍历完成的情况
+    while (l <= M) {
+        sorted[i++] = arr[l++];
+    }
+    while (r <= R) {
+        sorted[i++] = arr[r++];
+    }
+    
+    //将新生成的有序数组拷贝回原数组
+    for (int j = 0; j < LEN; j++) {
+        arr[L + j] = sorted[j];
+    }
+}
+```

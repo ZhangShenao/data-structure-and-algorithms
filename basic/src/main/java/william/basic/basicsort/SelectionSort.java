@@ -1,4 +1,4 @@
-package william.basic.sort;
+package william.basic.basicsort;
 
 import william.common.utils.ArrayUtils;
 
@@ -17,7 +17,7 @@ public class SelectionSort {
         ArrayUtils.printStandardSortResult(arr);
         
         selectionSort(arr);
-        System.out.println("自行排序后数组:");
+        System.out.println("选择排序后数组:");
         System.out.println(Arrays.toString(arr));
     }
     
