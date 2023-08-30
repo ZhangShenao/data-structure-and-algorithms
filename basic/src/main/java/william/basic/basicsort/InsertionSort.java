@@ -1,4 +1,4 @@
-package william.basic.sort;
+package william.basic.basicsort;
 
 import william.common.utils.ArrayUtils;
 
@@ -16,7 +16,7 @@ public class InsertionSort {
         int[] arr = ArrayUtils.generateRandomArray(10, -100, 100);
         ArrayUtils.printStandardSortResult(arr);
         
-        System.out.println("自行排序后数组:");
+        System.out.println("插入排序后数组:");
         insertionSort(arr);
         System.out.println(Arrays.toString(arr));
     }
