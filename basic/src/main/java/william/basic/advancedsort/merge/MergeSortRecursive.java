@@ -1,4 +1,4 @@
-package william.basic.advancedsort;
+package william.basic.advancedsort.merge;
 
 import william.common.utils.ArrayUtils;
 
@@ -6,10 +6,10 @@ import java.util.Arrays;
 
 /**
  * @author ZhangShenao
- * @date 2023/8/30 9:21 AM
- * @description: 归并排序——迭代(非递归)实现
+ * @date 2023/8/30 9:03 AM
+ * @description: 归并排序——递归实现
  */
-public class IterationMergeSort {
+public class MergeSortRecursive {
     
     public static void main(String[] args) {
         int[] arr = ArrayUtils.generateRandomArray(20, -100, 100);
@@ -27,41 +27,29 @@ public class IterationMergeSort {
         if (arr == null || arr.length == 0) {
             return;
         }
-        int LEN = arr.length;
         
-        //借助一个步长step,初始值为1,每次*2
-        int step = 1;
-        
-        while (step < LEN && step > 0) { //终止条件:step=数组长度,或step值过大溢出
-            //在每个步长周期,从左至右依次找到左、右两个数组,长度均为step
-            int L = 0;
-            while (L < LEN) {
-                if (LEN - L <= step) { //只有左边数组,无序merge,直接返回
-                    break;
-                }
-                int M = L + step - 1;
-                
-                int R;
-                if (LEN - M - 1 >= step) {
-                    R = M + step;
-                } else {
-                    R = LEN - 1;
-                }
-                
-                //左边数组范围[L,M],右边数组范围[M+1,R]。将两个有序数组合并成一个有序数组
-                merge(arr, L, M, R);
-                
-                //继续处理下一个区间
-                if (R >= LEN - 1) {
-                    break;
-                }
-                L = R + 1;
-                
-            }
-            
-            step = step << 1;
+        //递归进行
+        recursiveMergeSort(arr, 0, arr.length - 1);
+    }
+    
+    /**
+     * 递归实现,对数组arr[L,R]范围进行递归排序
+     */
+    private static void recursiveMergeSort(int[] arr, int L, int R) {
+        //递归终止条件
+        if (L >= R) {
+            return;
         }
         
+        //将数组平均划分为左、右两个部分
+        int M = L + ((R - L) >> 1); //避免溢出
+        
+        //先保证左、右两部分数组有序
+        recursiveMergeSort(arr, L, M);
+        recursiveMergeSort(arr, M + 1, R);
+        
+        //之后将两个有序数组合并为一个整体有序数组,保证arr[L,R]范围内有序
+        merge(arr, L, M, R);
     }
     
     /**
