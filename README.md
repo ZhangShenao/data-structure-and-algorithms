@@ -1616,3 +1616,45 @@ private static void merge(int[] arr, int L, int M, int R) {
     }
 }
 ```
+
+## 快速排序——Partition 过程
+
+以数组最后一个元素为基准值，将数组分成左、右两部分，左部分元素 <= 基准值，右部分元素 > 基准值，且基准值位于左、右分界线上。
+
+**算法思想**
+
+- **维护小于等于区间 [0,lessEqualR]，使得区间内的元素均 <= 基准值。**
+- **遍历数组：**
+  - **如果当前元素 <= 基准值，则将当前元素与 [0,lessEqualR] 区间的下一个元素进行交换，同时区间向右扩容一位。**
+  - **否则当前元素 > 基准值，则 [0,lessEqualR] 区间直接向右扩容一位。**
+
+算法实现
+
+```Java
+/**
+ * 以数组最后一个元素为基准值,将数组分成左、右两部分,左部分元素<=基准值,右部分元素>基准值,且基准值位于左、右分界线上。最终返回基准值所在的索引
+ */
+private static int partition(int[] arr, int L, int R) {
+    //边界条件校验
+    if (arr == null || arr.length == 0) {
+        return -1;
+    }
+    if (L >= R) {
+        return L;
+    }
+    
+    //维护区间[0,lessEqualR],区间内的元素均<=基准值
+    //lessEqualR为<=基准值的最后一个元素,lessEqualR为大于基准值的第一个元素
+    int lessEqualR = -1;
+    
+    //遍历数组,依次将元素与基准值进行比较
+    for (int i = 0; i <= R; i++) {
+        if (arr[i] <= arr[R]) {  //当前元素小于基准值,与[0,lessEqualR]区间的下一个元素交换
+            ArrayUtils.swap(arr, i, lessEqualR + 1);
+            ++lessEqualR;
+        }
+    }
+    
+    return lessEqualR;
+}
+```
