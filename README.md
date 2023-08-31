@@ -1658,3 +1658,219 @@ private static int partition(int[] arr, int L, int R) {
     return lessEqualR;
 }
 ```
+
+## 快速排序——Partition2 过程
+
+以数组最后一个元素为基准值，将数组分成三部分：左边部分元素均小于基准值；中间部分元素均等于基准值；右边部分元素均大于基准值。
+
+**算法思想**
+
+- **维护两个区间：小于区间为 [0,lessR]，lessR 为小于区间的最后一个元素；大于区间为 [greaterL,LEN-1]，greaterL 为大于区间的第一个元素。**
+- **遍历数组：**
+  - **如果当前元素 < 基准值，则将当前元素与 lessR 后一个元素进行交换，同时  [0,lessR] 区间向右移动一位。继续遍历下一个元素。**
+  - **如果当前元素 = 基准值，则区间不变，继续处理遍历下一个元素。**
+  - **否则当前元素 > 基准值，则将当前元素与 greaterL 的前一个元素进行交换，同时 [greaterL,LEN-1] 区间向左移动一位。并继续处理当前位置的元素。**
+
+算法实现：
+
+```Java
+/**
+ * 以数组最后一个元素为基准值, 将数组分成三部分:左边部分元素均小于基准值;中间部分元素均等于基准值;右边部分元素均大于基准值。
+ *
+ * @return 返回一个包含两个元素的数组, 第一个元素是等于基准值区间的左边界, 第二个元素是等于基准值区间的右边界
+ */
+public static int[] partition(int[] arr, int L, int R) {
+    //边界条件校验
+    if (arr == null || arr.length == 0 || L >= R) {
+        return new int[] {0, 0};
+    }
+    
+    //维护两个区间
+    //小于区间:[L,lessR],lessR指向小于基准值的最后一个位置
+    //大于区间:[greaterL,R],greaterL指向大于基准值的第一个位置
+    int lessR = L - 1;
+    int greaterL = R;
+    
+    //遍历数组
+    int i = L;
+    while (i < greaterL) {   //终止条件:当前元素到达了大于区的第一个元素
+        if (arr[i] < arr[R]) {   //当前元素小于基准值,将当前元素与lessR的下一个元素交换,并且[L,lessR]区间向右移动一位,并继续遍历下一个元素
+            ArrayUtils.swap(arr, i++, ++lessR);
+        } else if (arr[i] > arr[R]) { //当前元素大于基准值,将当前元素与greaterL的前一个元素交换,并且[greaterL,R]区间向左移动一位
+            ArrayUtils.swap(arr, i, --greaterL);
+            
+            //这里i不要向前移动,因为新交换过来的i位置的元素还没有处理
+        } else {    //当前元素等于基准值,无需任何处理,继续遍历
+            i++;
+        }
+    }
+    
+    //将基准值与greaterL处的元素交换
+    ArrayUtils.swap(arr, R, greaterL);
+    
+    //等于基准值的区间为[lessR+1,greaterL]
+    return new int[] {lessR + 1, greaterL};
+}
+```
+
+## 快速排序——递归实现
+
+**算法思想：**
+
+- **采用递归思想，每次对 arr[L,R] 范围内的数组进行快速排序。**
+- **借助 Partition2 过程，将数组划分为小于区、等于区和大于区。**
+- **对于小于区和大于区分别再次进行快速排序。**
+
+算法实现：
+
+```Java
+public static void quickSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length < 2) {
+        return;
+    }
+    
+    //对arr[0,len-1]范围进行快速排序
+    quickSortRecursive(arr, 0, arr.length - 1);
+}
+
+/**
+ * 递归实现：对数组arr[L,R]范围进行快速排序
+ */
+private static void quickSortRecursive(int[] arr, int L, int R) {
+    //递归终止条件
+    if (L >= R) {
+        return;
+    }
+    
+    //进行partition操作,找到等于区间的范围
+    int[] equalsRange = partition(arr, L, R);
+    
+    //对小于区和大于区分别再次进行快速排序
+    if (L < equalsRange[0] - 1) {
+        quickSortRecursive(arr, L, equalsRange[0] - 1);
+    }
+    if (equalsRange[1] + 1 < R) {
+        quickSortRecursive(arr, equalsRange[1] + 1, R);
+    }
+}
+
+/**
+ * 以数组最后一个元素为基准值, 将数组分成三部分:左边部分元素均小于基准值;中间部分元素均等于基准值;右边部分元素均大于基准值。
+ *
+ * @return 返回一个包含两个元素的数组, 第一个元素是等于基准值区间的左边界, 第二个元素是等于基准值区间的右边界
+ */
+public static int[] partition(int[] arr, int L, int R) {
+    //边界条件校验
+    if (arr == null || arr.length == 0 || L >= R) {
+        return new int[] {0, 0};
+    }
+    
+    //维护两个区间
+    //小于区间:[L,lessR],lessR指向小于基准值的最后一个位置
+    //大于区间:[greaterL,R],greaterL指向大于基准值的第一个位置
+    int lessR = L - 1;
+    int greaterL = R;
+    
+    //遍历数组
+    int i = L;
+    while (i < greaterL) {   //终止条件:当前元素到达了大于区的第一个元素
+        if (arr[i] < arr[R]) {   //当前元素小于基准值,将当前元素与lessR的下一个元素交换,并且[L,lessR]区间向右移动一位,并继续遍历下一个元素
+            ArrayUtils.swap(arr, i++, ++lessR);
+        } else if (arr[i] > arr[R]) { //当前元素大于基准值,将当前元素与greaterL的前一个元素交换,并且[greaterL,R]区间向左移动一位
+            ArrayUtils.swap(arr, i, --greaterL);
+            
+            //这里i不要向前移动,因为新交换过来的i位置的元素还没有处理
+        } else {    //当前元素等于基准值,无需任何处理,继续遍历
+            i++;
+        }
+    }
+    
+    //将基准值与greaterL处的元素交换
+    ArrayUtils.swap(arr, R, greaterL);
+    
+    //等于基准值的区间为[lessR+1,greaterL]
+    return new int[] {lessR + 1, greaterL};
+}
+```
+
+## 快速排序——迭代（非递归）实现
+
+**算法思想：借助一个栈，将待排序的区间从大到小放入栈中。依次从栈中弹出待排序的区间，进行 partition 操作后，再次将新区间放入栈中。**
+
+算法实现：
+
+```Java
+public static void quickSort(int[] arr) {
+    //边界条件校验
+    if (arr == null || arr.length < 2) {
+        return;
+    }
+    
+    //借助一个栈,暂存待排序的数组区间
+    Stack<int[]> stack = new Stack<>();
+    
+    //先将整个数组区间压栈
+    stack.push(new int[] {0, arr.length - 1});
+    
+    //依次从栈中弹出待排序的区间
+    while (!stack.isEmpty()) {
+        int[] range = stack.pop();
+        int L = range[0];
+        int R = range[1];
+        
+        //对arr[L,R]范围进行partition操作
+        int[] equalsRange = partition(arr, L, R);
+        
+        //分别将小于区和大于区压栈,等待被处理
+        if (L < equalsRange[0] - 1) {
+            int[] lessRange = new int[] {L, equalsRange[0] - 1};
+            stack.push(lessRange);
+        }
+        
+        if (equalsRange[1] + 1 < R) {
+            int[] greaterRange = new int[] {equalsRange[1] + 1, R};
+            stack.push(greaterRange);
+        }
+        
+    }
+}
+
+/**
+ * 以数组最后一个元素为基准值, 将数组分成三部分:左边部分元素均小于基准值;中间部分元素均等于基准值;右边部分元素均大于基准值。
+ *
+ * @return 返回一个包含两个元素的数组, 第一个元素是等于基准值区间的左边界, 第二个元素是等于基准值区间的右边界
+ */
+public static int[] partition(int[] arr, int L, int R) {
+    //边界条件校验
+    if (arr == null || arr.length == 0 || L >= R) {
+        return new int[] {0, 0};
+    }
+    
+    //维护两个区间
+    //小于区间:[L,lessR],lessR指向小于基准值的最后一个位置
+    //大于区间:[greaterL,R],greaterL指向大于基准值的第一个位置
+    int lessR = L - 1;
+    int greaterL = R;
+    
+    //遍历数组
+    int i = L;
+    while (i < greaterL) {   //终止条件:当前元素到达了大于区的第一个元素
+        if (arr[i] < arr[R]) {   //当前元素小于基准值,将当前元素与lessR的下一个元素交换,并且[L,lessR]区间向右移动一位,并继续遍历下一个元素
+            ArrayUtils.swap(arr, i++, ++lessR);
+        } else if (arr[i] > arr[R]) { //当前元素大于基准值,将当前元素与greaterL的前一个元素交换,并且[greaterL,R]区间向左移动一位
+            ArrayUtils.swap(arr, i, --greaterL);
+            
+            //这里i不要向前移动,因为新交换过来的i位置的元素还没有处理
+        } else {    //当前元素等于基准值,无需任何处理,继续遍历
+            i++;
+        }
+    }
+    
+    //将基准值与greaterL处的元素交换
+    ArrayUtils.swap(arr, R, greaterL);
+    
+    //等于基准值的区间为[lessR+1,greaterL]
+    return new int[] {lessR + 1, greaterL};
+}
+```
