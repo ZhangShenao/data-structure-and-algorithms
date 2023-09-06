@@ -5,7 +5,7 @@ package william.leetcode.xor;
  * @date
  * @description 在一个数组中, 只有一个数字出现奇数次, 其余数字均出现偶数次。实现算法找到出现奇数次的数字。
  */
-public class FindOddTimesNumber {
+public class FindOddTimesNumber_找到一个数组中出现奇数次的数字 {
     public static void main(String[] args) {
         int[] arr = new int[]{1, 2, 3, 4, 4, 3, 2, 1, 2, 2, 3, 3, 4, 1, 1};
         int res = findOddTimesNumber(arr);  //目标:4
